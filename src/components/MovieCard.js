@@ -1,44 +1,91 @@
-import React from 'react';
+import React, { Component, PureComponent } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 const POSTERBASEURL = 'https://image.tmdb.org/t/p/w185';
-const GridView = (poster, title) => {
+const GridView = (poster, title, orgTitle) => {
   return (
     <TouchableOpacity style={[styles.container, gridStyles.container]}>
-      <Image
-        style={gridStyles.posterImg}
-        source={{ uri: POSTERBASEURL + poster }} />
-      <Text style={gridStyles.titleTxt}>{title}</Text>
+      {poster === null ? (
+        <Icon
+          name="image-off-outline"
+          style={gridStyles.posterImg}
+          size={150}
+          color="white"
+        />
+      ) : (
+        <Image
+          style={gridStyles.posterImg}
+          source={{ uri: POSTERBASEURL + poster }} />
+      )}
+
+      <Text style={gridStyles.titleTxt}>{title !== null ? orgTitle : title}</Text>
     </TouchableOpacity>
   )
-}
+};
 
-const ListView = (poster, title) => {
+const getRateColor = (rate) => {
+  if (rate >= 7) return 'rgba(0,255,0,0.1)';
+  else if (rate < 7 && rate > 4) return 'rgba(255,255,0,0.1)';
+  else return 'rgba(255,0,0,0.1)';
+};
+
+const ListView = (poster, title, releaseDate, language, genres, rate, orgTitle) => {
   return (
     <TouchableOpacity style={[styles.container, listStyles.container]}>
-      <Image
-        style={listStyles.posterImg}
-        source={{ uri: POSTERBASEURL + poster }} />
+      {poster === null ? (
+        <Icon
+          name="image-off-outline"
+          style={listStyles.posterImg}
+          size={150}
+          color="white"
+        />
+      ) : (
+        <Image
+          style={listStyles.posterImg}
+          source={{ uri: POSTERBASEURL + poster }} />
+      )}
 
       <View style={listStyles.rightView}>
-        <Text style={listStyles.titleTxt}>{title}</Text>
+        <Text style={listStyles.titleTxt}>{title !== null ? orgTitle : title}</Text>
         <View style={listStyles.yearLangView}>
-          <Text style={styles.txt}>Year</Text>
+          <Text style={styles.txt}>{releaseDate !== null ? releaseDate.slice(0, 4) : 'Year Not Available'}</Text>
           <View style={listStyles.line} />
-          <Text style={styles.txt}>Language</Text>
+          <Text style={styles.txt}>{language}</Text>
         </View>
-        <Text style={styles.txt}>Genre Array</Text>
-        <View style={listStyles.rateCountView}>
-          <Text style={listStyles.rateCountTxt}>10</Text>
+        <Text style={styles.txt}>{genres !== null ? genres.slice(0, 3) : 'Genres Not Available'}</Text>
+        <View style={[listStyles.rateCountView,
+        { backgroundColor: getRateColor(rate) }]}>
+          <Text style={listStyles.rateCountTxt}>{rate}</Text>
         </View>
       </View>
     </TouchableOpacity>
   )
 }
 
-const MovieCard = ({ isGridEnable, poster, title }) => {
-  return isGridEnable ? GridView(poster, title) : ListView(poster, title);
+class MovieCard extends Component {
+
+  checkGenresType = () => {
+    const genres_ids = this.props.genres;
+    const allGenresType = this.props.genresList;
+    const currGenres = [];
+    allGenresType.map(item => {
+      genres_ids.map(ele => {
+        return item.id === ele && currGenres.push(item.name + ' ')
+      })
+    })
+    return currGenres;
+  }
+
+  render() {
+    const { isGridEnable, poster, title, releaseDate, language, rate, orgTitle } = this.props;
+
+    return isGridEnable ? GridView(poster, title, orgTitle) : ListView(poster, title, releaseDate, language, this.checkGenresType(), rate, orgTitle);
+  }
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -72,7 +119,7 @@ const listStyles = StyleSheet.create({
     alignItems: 'center',
   },
   line: {
-    height: 12,
+    height: '60%',
     borderWidth: 0.5,
     borderColor: 'grey',
     marginHorizontal: 10,
@@ -88,11 +135,11 @@ const listStyles = StyleSheet.create({
     height: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'lightgreen',
     borderRadius: 20,
   },
   rateCountTxt: {
     fontSize: 16,
+    color: 'rgba(255,255,255,0.7)',
   }
 });
 
@@ -111,4 +158,10 @@ const gridStyles = StyleSheet.create({
   },
 });
 
-export default MovieCard;
+
+const mapStateToProps = state => ({
+  genresList: state.home.genresList,
+});
+
+
+export default connect(mapStateToProps)(MovieCard);

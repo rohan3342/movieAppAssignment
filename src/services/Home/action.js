@@ -10,7 +10,7 @@ export const getMovieGenres = () => async dispatch => {
 };
 
 export const getMovieList = (pageCount) => async dispatch => {
-  const response = await fetch(CONST.URL_MOVIE_LIST.concat('1'));
+  const response = await fetch(CONST.URL_MOVIE_LIST);
   const { results } = await response.json();
   dispatch({
     type: CONST.GET_MOVIE_LIST,
@@ -19,7 +19,7 @@ export const getMovieList = (pageCount) => async dispatch => {
 };
 
 export const getMovieListDateReleases = (pageCount) => async dispatch => {
-  const response = await fetch(CONST.URL_MOVIE_LIST_DATE_RELEASES.concat('1'));
+  const response = await fetch(CONST.URL_MOVIE_LIST_DATE_RELEASES);
   const { results } = await response.json();
   dispatch({
     type: CONST.GET_MOVIE_LIST_DATE_RELEASES,
@@ -28,7 +28,7 @@ export const getMovieListDateReleases = (pageCount) => async dispatch => {
 };
 
 export const getMovieListDateOld = (pageCount) => async dispatch => {
-  const response = await fetch(CONST.URL_MOVIE_LIST_DATE_OLD.concat('1'));
+  const response = await fetch(CONST.URL_MOVIE_LIST_DATE_OLD);
   const { results } = await response.json();
   dispatch({
     type: CONST.GET_MOVIE_LIST_DATE_OLD,
@@ -37,7 +37,7 @@ export const getMovieListDateOld = (pageCount) => async dispatch => {
 };
 
 export const getMovieListPopularityMost = (pageCount) => async dispatch => {
-  const response = await fetch(CONST.URL_MOVIE_LIST_POPULARITY_MOST.concat('1'));
+  const response = await fetch(CONST.URL_MOVIE_LIST_POPULARITY_MOST);
   const { results } = await response.json();
   dispatch({
     type: CONST.GET_MOVIE_LIST_POPULARITY_MOST,
@@ -46,7 +46,7 @@ export const getMovieListPopularityMost = (pageCount) => async dispatch => {
 };
 
 export const getMovieListPopularityLess = (pageCount) => async dispatch => {
-  const response = await fetch(CONST.URL_MOVIE_LIST_POPULARITY_LESS.concat('1'));
+  const response = await fetch(CONST.URL_MOVIE_LIST_POPULARITY_LESS);
   const { results } = await response.json();
   dispatch({
     type: CONST.GET_MOVIE_LIST_POPULARITY_LESS,
@@ -55,7 +55,7 @@ export const getMovieListPopularityLess = (pageCount) => async dispatch => {
 };
 
 export const getMovieListRevenueHigher = (pageCount) => async dispatch => {
-  const response = await fetch(CONST.URL_MOVIE_LIST_REVENUE_HIGHER.concat('1'));
+  const response = await fetch(CONST.URL_MOVIE_LIST_REVENUE_HIGHER);
   const { results } = await response.json();
   dispatch({
     type: CONST.GET_MOVIE_LIST_REVENUE_HIGHER,
@@ -64,28 +64,10 @@ export const getMovieListRevenueHigher = (pageCount) => async dispatch => {
 };
 
 export const getMovieListRevenueLowest = (pageCount) => async dispatch => {
-  const response = await fetch(CONST.URL_MOVIE_LIST_REVENUE_LOWEST.concat('1'));
+  const response = await fetch(CONST.URL_MOVIE_LIST_REVENUE_LOWEST);
   const { results } = await response.json();
   dispatch({
     type: CONST.GET_MOVIE_LIST_REVENUE_LOWEST,
-    payload: results,
-  });
-};
-
-export const getMovieListVotecountHighest = (pageCount) => async dispatch => {
-  const response = await fetch(CONST.GET_MOVIE_LIST_VOTECOUNT_HIGHEST.concat('1'));
-  const { results } = await response.json();
-  dispatch({
-    type: CONST.GET_MOVIE_LIST_VOTECOUNT_HIGHEST,
-    payload: results,
-  });
-};
-
-export const getMovieListVotecountLowest = (pageCount) => async dispatch => {
-  const response = await fetch(CONST.GET_MOVIE_LIST_VOTECOUNT_LOWEST.concat('1'));
-  const { results } = await response.json();
-  dispatch({
-    type: CONST.GET_MOVIE_LIST_VOTECOUNT_LOWEST,
     payload: results,
   });
 };

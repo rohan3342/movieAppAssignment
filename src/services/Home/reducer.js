@@ -31,12 +31,6 @@ export default function HomeReducer(state = initialState, action) {
     case CONST.GET_MOVIE_LIST_REVENUE_LOWEST:
       return { ...state, movieList: action.payload };
 
-    case CONST.GET_MOVIE_LIST_VOTECOUNT_HIGHEST:
-      return { ...state, movieList: action.payload };
-
-    case CONST.GET_MOVIE_LIST_VOTECOUNT_LOWEST:
-      return { ...state, movieList: action.payload };
-
     default:
       return state;
   }

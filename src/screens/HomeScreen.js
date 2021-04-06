@@ -2,21 +2,26 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MovieCard from '../components/MovieCard';
-// import jsonData from '../Data.json';
 import { connect } from 'react-redux';
 import {
   getMovieList,
-  getMovieListDateReleases,
+  getMovieGenres,
   getMovieListDateOld,
-  getMovieListPopularityMost, getMovieListPopularityLess, getMovieListRevenueHigher, getMovieListRevenueLowest,
+  getMovieListDateReleases,
+  getMovieListPopularityMost,
+  getMovieListPopularityLess,
+  getMovieListRevenueHigher,
+  getMovieListRevenueLowest,
 } from '../services/Home/action';
+import FilterModel from '../components/FilterModel';
 
-// const DATA = jsonData.results;
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      gridView: true,
+      gridView: false,
+      isFilterModalVisible: false,
+      activeFilter: 'Most Popular',
     };
   }
 
@@ -24,24 +29,54 @@ class HomeScreen extends Component {
     this.setState({ gridView: !this.state.gridView });
   }
 
+  changeModalView = (value) => {
+    this.setState({ isFilterModalVisible: !this.state.isFilterModalVisible });
+  };
+
+  activeFilter = (value) => {
+    this.setState({ activeFilter: value })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('Component Update');
+    if (prevState !== this.state) {
+      switch (this.state.activeFilter) {
+        case 'Releases':
+          return this.props.getMovieListDateReleases();
+        case 'Old Movies':
+          return this.props.getMovieListDateOld();
+        case 'Most Popular':
+          return this.props.getMovieListPopularityMost();
+        case 'Least Popular':
+          return this.props.getMovieListPopularityLess();
+        case 'Highest Grossing':
+          return this.props.getMovieListRevenueHigher();
+        case 'Leat Grossing':
+          return this.props.getMovieListRevenueLowest();
+      }
+    }
+  }
+
   componentDidMount() {
-    this.props.getMovieListPopularityLess();
+    this.props.getMovieGenres();
+    this.props.getMovieList();
   }
 
   render() {
     const movie = this.props.movie;
-    const { gridView } = this.state;
+    const { gridView, activeFilter } = this.state;
+
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.topBarView}>
           <Text style={styles.topBarTxt}>Home</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => this.changeModalView()}>
             <FeatherIcon size={25} name="filter" color="gray" />
           </TouchableOpacity>
         </View>
         <View style={styles.mainContainer}>
           <View style={styles.mainContainerTopBar}>
-            <Text style={styles.mainContainerTopBarTxt}>FliterProp</Text>
+            <Text style={styles.mainContainerTopBarTxt}>{activeFilter}</Text>
             <TouchableOpacity
               style={gridView ? styles.gridViewBtnAction : styles.gridViewBtnInAction}
               onPress={() => this.changeGridView()}
@@ -61,10 +96,19 @@ class HomeScreen extends Component {
               renderItem={(ele) => <MovieCard
                 isGridEnable={gridView}
                 poster={ele.item.poster_path}
+                orgTitle={ele.item.original_title}
                 title={ele.item.original_title}
+                releaseDate={ele.item.release_date}
+                language={ele.item.original_language}
+                rate={ele.item.vote_average}
+                genres={ele.item.genre_ids}
               />}
             />
           </View>
+          <FilterModel
+            activeFilter={(value) => this.activeFilter(value)}
+            onDismiss={() => this.changeModalView()}
+            visible={this.state.isFilterModalVisible} />
         </View>
       </SafeAreaView>
     );
@@ -88,7 +132,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   topBarTxt: {
-    fontSize: 18,
+    fontSize: 20,
     color: 'grey'
   },
   mainContainerTopBar: {
@@ -117,6 +161,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  getMovieGenres: () => dispatch(getMovieGenres()),
   getMovieList: () => dispatch(getMovieList()),
   getMovieListDateReleases: () => dispatch(getMovieListDateReleases()),
   getMovieListDateOld: () => dispatch(getMovieListDateOld()),
