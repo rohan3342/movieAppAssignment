@@ -2,14 +2,21 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MovieCard from '../components/MovieCard';
-import jsonData from '../Data.json';
+// import jsonData from '../Data.json';
+import { connect } from 'react-redux';
+import {
+  getMovieList,
+  getMovieListDateReleases,
+  getMovieListDateOld,
+  getMovieListPopularityMost, getMovieListPopularityLess, getMovieListRevenueHigher, getMovieListRevenueLowest,
+} from '../services/Home/action';
 
-const DATA = jsonData.results;
+// const DATA = jsonData.results;
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      gridView: false,
+      gridView: true,
     };
   }
 
@@ -17,7 +24,12 @@ class HomeScreen extends Component {
     this.setState({ gridView: !this.state.gridView });
   }
 
+  componentDidMount() {
+    this.props.getMovieListPopularityLess();
+  }
+
   render() {
+    const movie = this.props.movie;
     const { gridView } = this.state;
     return (
       <SafeAreaView style={styles.container}>
@@ -44,7 +56,7 @@ class HomeScreen extends Component {
             <FlatList
               key={gridView ? 2 : 1}
               numColumns={gridView ? 2 : 1}
-              data={DATA}
+              data={movie}
               keyExtractor={item => item.id}
               renderItem={(ele) => <MovieCard
                 isGridEnable={gridView}
@@ -100,4 +112,18 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HomeScreen;
+const mapStateToProps = state => ({
+  movie: state.home.movieList,
+});
+
+const mapDispatchToProps = dispatch => ({
+  getMovieList: () => dispatch(getMovieList()),
+  getMovieListDateReleases: () => dispatch(getMovieListDateReleases()),
+  getMovieListDateOld: () => dispatch(getMovieListDateOld()),
+  getMovieListPopularityMost: () => dispatch(getMovieListPopularityMost()),
+  getMovieListPopularityLess: () => dispatch(getMovieListPopularityLess()),
+  getMovieListRevenueHigher: () => dispatch(getMovieListRevenueHigher()),
+  getMovieListRevenueLowest: () => dispatch(getMovieListRevenueLowest()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
