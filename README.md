@@ -38,4 +38,4 @@
 
 > ### Output:
 >
-> <img width="300px" src="./src/screenshot/output.gif"></img>
+> <img width="300px" src="./src/screenshots/output.gif"></img>

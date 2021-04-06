@@ -28,6 +28,7 @@ const FilterModel = (props) => {
   const higherrevenueSwitch = (value) => { toggleSwitch('Highest Grossing') };
   const lowestrevenueSwitch = (value) => { toggleSwitch('Least Grossing') };
 
+  // Animation
   const screenHeight = Dimensions.get('screen').height;
   const panY = useRef(new Animated.Value(screenHeight)).current;
 
@@ -48,8 +49,6 @@ const FilterModel = (props) => {
     outputRange: [0, 0, 1],
   });
 
-  const handleDismiss = () => closeAnim.start(props.onDismiss);
-
   useEffect(() => {
     resetPositionAnim.start();
   }, [resetPositionAnim]);
@@ -69,6 +68,9 @@ const FilterModel = (props) => {
       },
     }),
   ).current;
+
+  // Modal Close
+  const handleDismiss = () => closeAnim.start(props.onDismiss);
 
   return (
     <Modal
