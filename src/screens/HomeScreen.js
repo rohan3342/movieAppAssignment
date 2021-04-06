@@ -1,11 +1,59 @@
 import React, { Component } from 'react';
-import { SafeAreaView, Text, StyleSheet } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import MovieCard from '../components/MovieCard';
+import jsonData from '../Data.json';
 
+const DATA = jsonData.results;
 class HomeScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      gridView: false,
+    };
+  }
+
+  changeGridView = () => {
+    this.setState({ gridView: !this.state.gridView });
+  }
+
   render() {
+    const { gridView } = this.state;
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.txt}>Home Screen</Text>
+        <View style={styles.topBarView}>
+          <Text style={styles.topBarTxt}>Home</Text>
+          <TouchableOpacity>
+            <FeatherIcon size={25} name="filter" color="gray" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.mainContainer}>
+          <View style={styles.mainContainerTopBar}>
+            <Text style={styles.mainContainerTopBarTxt}>FliterProp</Text>
+            <TouchableOpacity
+              style={gridView ? styles.gridViewBtnAction : styles.gridViewBtnInAction}
+              onPress={() => this.changeGridView()}
+            >
+              {gridView ?
+                (<FeatherIcon name="grid" size={22} color="grey" />) :
+                (<FeatherIcon name="grid" size={22} color="grey" />)
+              }
+            </TouchableOpacity>
+          </View>
+          <View style={{ flex: 1 }}>
+            <FlatList
+              key={gridView ? 2 : 1}
+              numColumns={gridView ? 2 : 1}
+              data={DATA}
+              keyExtractor={item => item.id}
+              renderItem={(ele) => <MovieCard
+                isGridEnable={gridView}
+                poster={ele.item.poster_path}
+                title={ele.item.original_title}
+              />}
+            />
+          </View>
+        </View>
       </SafeAreaView>
     );
   }
@@ -15,11 +63,40 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#191919',
     flex: 1,
-    justifyContent: 'center',
+  },
+  topBarView: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 15,
+    borderBottomColor: '#333',
+    borderBottomWidth: 0.5,
+  },
+  mainContainer: {
+    flex: 1
+  },
+  topBarTxt: {
+    fontSize: 18,
+    color: 'grey'
+  },
+  mainContainerTopBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 15,
     alignItems: 'center',
   },
-  txt: {
-    color: 'white'
+  mainContainerTopBarTxt: {
+    color: 'grey',
+    fontSize: 18,
+  },
+  gridViewBtnAction: {
+    backgroundColor: '#333',
+    borderRadius: 20,
+    padding: '2%',
+  },
+  gridViewBtnInAction: {
+    borderRadius: 20,
+    padding: '2%',
   }
 });
 
